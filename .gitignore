@@ -1,5 +1,4 @@
-*.js
-*.js.map
+#https://github.com/npm/npm/issues/3055
 node_modules
 tmp
 !tasks/*.js
