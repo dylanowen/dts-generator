@@ -70,8 +70,8 @@ function getFilenames(baseDir: string, files: string[]): string[] {
 
 		return glob.sync(pathUtil.resolve(baseDir, filename));
 	}).reduce((result, pathArray) => {
-        return result.concat(pathArray);
-    }, []);
+		return result.concat(pathArray);
+	}, []);
 }
 
 function processTree(sourceFile: ts.SourceFile, replacer: (node: ts.Node) => string): string {
@@ -206,14 +206,14 @@ export default function generate(options: Options): Promise<void> {
 	filenames.forEach(name => { verboseMessage('  ' + name); });
 	const excludesMap: { [filename: string]: boolean; } = {};
 
-	options.exclude = options.exclude || [ 'node_modules/**/*.d.ts' ];
+	options.exclude = getFilenames(baseDir, options.exclude || [ 'node_modules/**/*.d.ts' ]);
 
-	options.exclude && options.exclude.forEach(function (filename) {
-		glob.sync(filename).forEach(function(globFileName) {
-			excludesMap[filenameToMid(pathUtil.resolve(baseDir, globFileName))] = true;
-		});
+	options.exclude.forEach(function (filename) {
+		excludesMap[filenameToMid(filename)] = true;
 	});
-	if (options.exclude) {
+
+	// at this point we'll always have an array so just check if it's empty
+	if (options.exclude.length > 0) {
 		verboseMessage('exclude:');
 		options.exclude.forEach(name => { verboseMessage('  ' + name); });
 	}
