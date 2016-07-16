@@ -65,11 +65,13 @@ function getFilenames(baseDir: string, files: string[]): string[] {
 	return files.map(function (filename) {
 		const resolvedFilename = pathUtil.resolve(filename);
 		if (resolvedFilename.indexOf(baseDir) === 0) {
-			return resolvedFilename;
+			return glob.sync(resolvedFilename);
 		}
 
-		return pathUtil.resolve(baseDir, filename);
-	});
+		return glob.sync(pathUtil.resolve(baseDir, filename));
+	}).reduce((result, pathArray) => {
+        return result.concat(pathArray);
+    }, []);
 }
 
 function processTree(sourceFile: ts.SourceFile, replacer: (node: ts.Node) => string): string {
